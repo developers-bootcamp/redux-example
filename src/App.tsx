@@ -1,26 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { ICountersState, addOne, subtractOne } from './redux/countersSlice';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from './redux/store';
+import { updateCounter } from './redux/asyncDispatch';
 
 function App() {
+  console.log(process.env)
+  const counters: ICountersState = useSelector<RootState, ICountersState>(state => {
+    return state.countersReducer
+  })
+
+  const dispatch = useAppDispatch()
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <span>counter:</span>
+      {counters.counter}
+      <button onClick={() => { dispatch(addOne()) }}>plus</button>
+      <button onClick={() => { dispatch(updateCounter()) }}>minus</button>
+
+      {counters.isLoading ? `loading: ${counters.isLoading}`: ''}
+      {counters.errorMessage ? 'error :' + counters.errorMessage: ''}
     </div>
   );
 }
+
 
 export default App;
